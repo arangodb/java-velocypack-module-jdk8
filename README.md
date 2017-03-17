@@ -5,6 +5,11 @@
 
 Java 8 module for [Java VelocyPack](https://github.com/arangodb/java-velocypack).
 
+Added support for:
+* java.time.Instant
+* java.time.LocalDate
+* java.time.LocalDateTime
+
 ## Maven
 
 To add the dependency to your project with maven, add the following code to your pom.xml:
@@ -39,5 +44,5 @@ mvn clean install -DskipTests=true -Dgpg.skip=true -Dmaven.javadoc.skip=true -B
 ## Usage / registering module
 
 ``` Java
-  VPack vpack = new VPack.Builder().registerModule(new VPackJdk8Module()).build();
+VPack vpack = new VPack.Builder().registerModule(new VPackJdk8Module()).build();
 ``` 
