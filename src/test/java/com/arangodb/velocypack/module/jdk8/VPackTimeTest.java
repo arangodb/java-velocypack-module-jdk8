@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.arangodb.velocypack.VPack;
@@ -43,9 +44,16 @@ import com.arangodb.velocypack.ValueType;
  * @author Mark - mark at arangodb.com
  *
  */
-public class VPackSerializeDeserializeTest {
+public class VPackTimeTest {
 
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");// ISO 8601
+
+	private static VPack vp;
+
+	@BeforeClass
+	public static void setup() {
+		vp = new VPack.Builder().registerModule(new VPackJdk8Module()).build();
+	}
 
 	protected static class TestEntityDate {
 		private Instant instant;
@@ -92,9 +100,7 @@ public class VPackSerializeDeserializeTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	public void serializeDate() {
-		final VPack.Builder builder = new VPack.Builder();
-		builder.registerModule(new VPackJdk8Module());
-		final VPackSlice vpack = builder.build().serialize(new TestEntityDate(1474988621));
+		final VPackSlice vpack = vp.serialize(new TestEntityDate(1474988621));
 		assertThat(vpack, is(notNullValue()));
 		assertThat(vpack.isObject(), is(true));
 		assertThat(vpack.get("instant").isString(), is(true));
@@ -115,9 +121,7 @@ public class VPackSerializeDeserializeTest {
 		builder.add("localDateTime", new Date(1475062216));
 		builder.close();
 
-		final VPack.Builder vpackBuilder = new VPack.Builder();
-		vpackBuilder.registerModule(new VPackJdk8Module());
-		final TestEntityDate entity = vpackBuilder.build().deserialize(builder.slice(), TestEntityDate.class);
+		final TestEntityDate entity = vp.deserialize(builder.slice(), TestEntityDate.class);
 		assertThat(entity, is(notNullValue()));
 		assertThat(entity.instant, is(Instant.ofEpochMilli(1475062216)));
 		assertThat(entity.localDate, is(Instant.ofEpochMilli(1475062216).atZone(ZoneId.systemDefault()).toLocalDate()));
@@ -135,9 +139,7 @@ public class VPackSerializeDeserializeTest {
 		builder.add("localDateTime", DATE_FORMAT.format(new Date(1475062216)));
 		builder.close();
 
-		final VPack.Builder vpackBuilder = new VPack.Builder();
-		vpackBuilder.registerModule(new VPackJdk8Module());
-		final TestEntityDate entity = vpackBuilder.build().deserialize(builder.slice(), TestEntityDate.class);
+		final TestEntityDate entity = vp.deserialize(builder.slice(), TestEntityDate.class);
 		assertThat(entity, is(notNullValue()));
 		assertThat(entity.instant, is(Instant.ofEpochMilli(1475062216)));
 		assertThat(entity.localDate, is(Instant.ofEpochMilli(1475062216).atZone(ZoneId.systemDefault()).toLocalDate()));
@@ -147,12 +149,10 @@ public class VPackSerializeDeserializeTest {
 
 	@Test
 	public void date() {
-		final VPack.Builder builder = new VPack.Builder();
-		builder.registerModule(new VPackJdk8Module());
 		final TestEntityDate entity = new TestEntityDate(1474988621);
-		final VPackSlice vpack = builder.build().serialize(entity);
+		final VPackSlice vpack = vp.serialize(entity);
 		assertThat(vpack, is(notNullValue()));
-		final TestEntityDate entity2 = builder.build().deserialize(vpack, TestEntityDate.class);
+		final TestEntityDate entity2 = vp.deserialize(vpack, TestEntityDate.class);
 		assertThat(entity2, is(notNullValue()));
 		assertThat(entity2.instant, is(entity.instant));
 		assertThat(entity2.localDate, is(entity.localDate));

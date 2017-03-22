@@ -25,6 +25,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 import com.arangodb.velocypack.VPackSerializer;
 import com.arangodb.velocypack.internal.VPackSerializers;
@@ -35,14 +39,26 @@ import com.arangodb.velocypack.internal.VPackSerializers;
  */
 public class VPackJdk8Serializers {
 
-	public static VPackSerializer<Instant> INSTANT = (builder, attribute, value, context) -> {
+	public static final VPackSerializer<Instant> INSTANT = (builder, attribute, value, context) -> {
 		VPackSerializers.DATE.serialize(builder, attribute, Date.from(value), context);
 	};
-	public static VPackSerializer<LocalDate> LOCAL_DATE = (builder, attribute, value, context) -> {
+	public static final VPackSerializer<LocalDate> LOCAL_DATE = (builder, attribute, value, context) -> {
 		INSTANT.serialize(builder, attribute, value.atStartOfDay(ZoneId.systemDefault()).toInstant(), context);
 	};
-	public static VPackSerializer<LocalDateTime> LOCAL_DATE_TIME = (builder, attribute, value, context) -> {
+	public static final VPackSerializer<LocalDateTime> LOCAL_DATE_TIME = (builder, attribute, value, context) -> {
 		INSTANT.serialize(builder, attribute, value.atZone(ZoneId.systemDefault()).toInstant(), context);
+	};
+	public static final VPackSerializer<Optional<?>> OPTIONAL = (builder, attribute, value, context) -> {
+		context.serialize(builder, attribute, value.orElse(null));
+	};
+	public static final VPackSerializer<OptionalDouble> OPTIONAL_DOUBLE = (builder, attribute, value, context) -> {
+		context.serialize(builder, attribute, value.isPresent() ? value.getAsDouble() : null);
+	};
+	public static final VPackSerializer<OptionalInt> OPTIONAL_INT = (builder, attribute, value, context) -> {
+		context.serialize(builder, attribute, value.isPresent() ? value.getAsInt() : null);
+	};
+	public static final VPackSerializer<OptionalLong> OPTIONAL_LONG = (builder, attribute, value, context) -> {
+		context.serialize(builder, attribute, value.isPresent() ? value.getAsLong() : null);
 	};
 
 }

@@ -20,12 +20,21 @@
 
 package com.arangodb.velocypack.module.jdk8.internal;
 
+import java.lang.reflect.ParameterizedType;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 
+import com.arangodb.velocypack.VPackDeserializationContext;
 import com.arangodb.velocypack.VPackDeserializer;
+import com.arangodb.velocypack.VPackDeserializerParameterizedType;
+import com.arangodb.velocypack.VPackSlice;
+import com.arangodb.velocypack.exception.VPackException;
 import com.arangodb.velocypack.internal.VPackDeserializers;
 
 /**
@@ -34,14 +43,45 @@ import com.arangodb.velocypack.internal.VPackDeserializers;
  */
 public class VPackJdk8Deserializers {
 
-	public static VPackDeserializer<Instant> INSTANT = (parent, vpack, context) -> {
+	public static final VPackDeserializer<Instant> INSTANT = (parent, vpack, context) -> {
 		return VPackDeserializers.DATE.deserialize(parent, vpack, context).toInstant();
 	};
-	public static VPackDeserializer<LocalDate> LOCAL_DATE = (parent, vpack, context) -> {
+	public static final VPackDeserializer<LocalDate> LOCAL_DATE = (parent, vpack, context) -> {
 		return INSTANT.deserialize(parent, vpack, context).atZone(ZoneId.systemDefault()).toLocalDate();
 	};
-	public static VPackDeserializer<LocalDateTime> LOCAL_DATE_TIME = (parent, vpack, context) -> {
+	public static final VPackDeserializer<LocalDateTime> LOCAL_DATE_TIME = (parent, vpack, context) -> {
 		return INSTANT.deserialize(parent, vpack, context).atZone(ZoneId.systemDefault()).toLocalDateTime();
+	};
+	public static final VPackDeserializerParameterizedType<Optional<?>> OPTIONAL = new VPackDeserializerParameterizedType<Optional<?>>() {
+		@Override
+		public Optional<?> deserialize(
+			final VPackSlice parent,
+			final VPackSlice vpack,
+			final VPackDeserializationContext context) throws VPackException {
+			throw new UnsupportedOperationException();
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public Optional<?> deserialize(
+			final VPackSlice parent,
+			final VPackSlice vpack,
+			final VPackDeserializationContext context,
+			final ParameterizedType type) throws VPackException {
+			return Optional.ofNullable(context.deserialize(vpack, Class.class.cast(type.getActualTypeArguments()[0])));
+		}
+	};
+	public static final VPackDeserializer<OptionalDouble> OPTIONAL_DOUBLE = (parent, vpack, context) -> {
+		final Double value = context.deserialize(vpack, Double.class);
+		return (value != null) ? OptionalDouble.of(value) : OptionalDouble.empty();
+	};
+	public static final VPackDeserializer<OptionalInt> OPTIONAL_INT = (parent, vpack, context) -> {
+		final Integer value = context.deserialize(vpack, Integer.class);
+		return (value != null) ? OptionalInt.of(value) : OptionalInt.empty();
+	};
+	public static final VPackDeserializer<OptionalLong> OPTIONAL_LONG = (parent, vpack, context) -> {
+		final Long value = context.deserialize(vpack, Long.class);
+		return (value != null) ? OptionalLong.of(value) : OptionalLong.empty();
 	};
 
 }

@@ -23,6 +23,10 @@ package com.arangodb.velocypack.module.jdk8;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 import com.arangodb.velocypack.VPackModule;
 import com.arangodb.velocypack.VPackSetupContext;
@@ -40,10 +44,18 @@ public class VPackJdk8Module implements VPackModule {
 		context.registerDeserializer(Instant.class, VPackJdk8Deserializers.INSTANT);
 		context.registerDeserializer(LocalDate.class, VPackJdk8Deserializers.LOCAL_DATE);
 		context.registerDeserializer(LocalDateTime.class, VPackJdk8Deserializers.LOCAL_DATE_TIME);
+		context.registerDeserializer(Optional.class, VPackJdk8Deserializers.OPTIONAL);
+		context.registerDeserializer(OptionalDouble.class, VPackJdk8Deserializers.OPTIONAL_DOUBLE);
+		context.registerDeserializer(OptionalInt.class, VPackJdk8Deserializers.OPTIONAL_INT);
+		context.registerDeserializer(OptionalLong.class, VPackJdk8Deserializers.OPTIONAL_LONG);
 
 		context.registerSerializer(Instant.class, VPackJdk8Serializers.INSTANT);
 		context.registerSerializer(LocalDate.class, VPackJdk8Serializers.LOCAL_DATE);
 		context.registerSerializer(LocalDateTime.class, VPackJdk8Serializers.LOCAL_DATE_TIME);
+		context.registerSerializer(Optional.class, VPackJdk8Serializers.OPTIONAL);
+		context.registerSerializer(OptionalDouble.class, VPackJdk8Serializers.OPTIONAL_DOUBLE);
+		context.registerSerializer(OptionalInt.class, VPackJdk8Serializers.OPTIONAL_INT);
+		context.registerSerializer(OptionalLong.class, VPackJdk8Serializers.OPTIONAL_LONG);
 	}
 
 }

@@ -1,0 +1,6 @@
+v1.0.1 (2017-03-xx)
+---------------------------
+* added support for de-/serializing Optional
+* added support for de-/serializing OptionalDouble
+* added support for de-/serializing OptionalInt
+* added support for de-/serializing OptionalLong
