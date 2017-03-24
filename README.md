@@ -3,6 +3,9 @@
 
 # ArangoDB VelocyPack Java Module jdk8
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.arangodb/velocypack-module-jdk8/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.arangodb/velocypack-module-jdk8)
+
+
 Java 8 module for [Java VelocyPack](https://github.com/arangodb/java-velocypack).
 
 Added support for:
