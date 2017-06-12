@@ -54,7 +54,6 @@ public class VPackOptionalTest {
 		private Optional<String> s = Optional.empty();
 		private Optional<Integer> i = Optional.empty();
 		private Optional<OptionalTestEntity> o = Optional.empty();
-		@SuppressWarnings("unused")
 		private final Optional<String> e = Optional.empty();
 
 		public OptionalTestEntity() {
@@ -96,6 +95,38 @@ public class VPackOptionalTest {
 		assertThat(entity.i.isPresent(), is(true));
 		assertThat(entity.i.get(), is(69));
 		assertThat(entity.o.isPresent(), is(true));
+	}
+
+	@Test
+	public void serializeOptionalEmpty() {
+		final OptionalTestEntity entity = new OptionalTestEntity();
+
+		final VPackSlice vpack = vp.serialize(entity);
+		assertThat(vpack, is(notNullValue()));
+		assertThat(vpack.isObject(), is(true));
+		assertThat(vpack.size(), is(0));
+	}
+
+	@Test
+	public void deserializeOptionalNull() {
+		final VPackBuilder builder = new VPackBuilder();
+		builder.add(ValueType.OBJECT);
+		builder.add("s", ValueType.NULL);
+		builder.add("i", ValueType.NULL);
+		builder.add("o", ValueType.NULL);
+		builder.add("e", ValueType.NULL);
+		builder.close();
+
+		final OptionalTestEntity entity = vp.deserialize(builder.slice(), OptionalTestEntity.class);
+		assertThat(entity, is(notNullValue()));
+		assertThat(entity.s, is(notNullValue()));
+		assertThat(entity.s.isPresent(), is(false));
+		assertThat(entity.i, is(notNullValue()));
+		assertThat(entity.i.isPresent(), is(false));
+		assertThat(entity.o, is(notNullValue()));
+		assertThat(entity.o.isPresent(), is(false));
+		assertThat(entity.e, is(notNullValue()));
+		assertThat(entity.e.isPresent(), is(false));
 	}
 
 	protected static class OptionalPrimitiveTestEntity {
@@ -157,15 +188,21 @@ public class VPackOptionalTest {
 	}
 
 	@Test
-	public void deserializeOptionalPrimitiveEmpty() {
+	public void deserializeOptionalPrimitiveNull() {
 		final VPackBuilder builder = new VPackBuilder();
 		builder.add(ValueType.OBJECT);
+		builder.add("d", ValueType.NULL);
+		builder.add("i", ValueType.NULL);
+		builder.add("l", ValueType.NULL);
 		builder.close();
 
 		final OptionalPrimitiveTestEntity entity = vp.deserialize(builder.slice(), OptionalPrimitiveTestEntity.class);
 		assertThat(entity, is(notNullValue()));
+		assertThat(entity.d, is(notNullValue()));
 		assertThat(entity.d.isPresent(), is(false));
+		assertThat(entity.i, is(notNullValue()));
 		assertThat(entity.i.isPresent(), is(false));
+		assertThat(entity.l, is(notNullValue()));
 		assertThat(entity.l.isPresent(), is(false));
 	}
 }

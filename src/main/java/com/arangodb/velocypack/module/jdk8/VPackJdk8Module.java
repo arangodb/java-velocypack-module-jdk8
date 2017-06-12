@@ -44,10 +44,10 @@ public class VPackJdk8Module implements VPackModule {
 		context.registerDeserializer(Instant.class, VPackJdk8Deserializers.INSTANT);
 		context.registerDeserializer(LocalDate.class, VPackJdk8Deserializers.LOCAL_DATE);
 		context.registerDeserializer(LocalDateTime.class, VPackJdk8Deserializers.LOCAL_DATE_TIME);
-		context.registerDeserializer(Optional.class, VPackJdk8Deserializers.OPTIONAL);
-		context.registerDeserializer(OptionalDouble.class, VPackJdk8Deserializers.OPTIONAL_DOUBLE);
-		context.registerDeserializer(OptionalInt.class, VPackJdk8Deserializers.OPTIONAL_INT);
-		context.registerDeserializer(OptionalLong.class, VPackJdk8Deserializers.OPTIONAL_LONG);
+		context.registerDeserializer(Optional.class, VPackJdk8Deserializers.OPTIONAL, true);
+		context.registerDeserializer(OptionalDouble.class, VPackJdk8Deserializers.OPTIONAL_DOUBLE, true);
+		context.registerDeserializer(OptionalInt.class, VPackJdk8Deserializers.OPTIONAL_INT, true);
+		context.registerDeserializer(OptionalLong.class, VPackJdk8Deserializers.OPTIONAL_LONG, true);
 
 		context.registerSerializer(Instant.class, VPackJdk8Serializers.INSTANT);
 		context.registerSerializer(LocalDate.class, VPackJdk8Serializers.LOCAL_DATE);

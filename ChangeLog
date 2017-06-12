@@ -1,3 +1,10 @@
+v1.0.2 (2017-06-xx)
+---------------------------
+* added support for deserializing null values into Optional.empty()
+* added support for deserializing null values into OptionalDouble.empty()
+* added support for deserializing null values into OptionalInt.empty()
+* added support for deserializing null values into OptionalLong.empty()
+
 v1.0.1 (2017-03-xx)
 ---------------------------
 * added support for de-/serializing Optional
