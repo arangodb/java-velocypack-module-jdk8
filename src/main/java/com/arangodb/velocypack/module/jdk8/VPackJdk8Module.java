@@ -34,7 +34,7 @@ import com.arangodb.velocypack.module.jdk8.internal.VPackJdk8Deserializers;
 import com.arangodb.velocypack.module.jdk8.internal.VPackJdk8Serializers;
 
 /**
- * @author Mark - mark at arangodb.com
+ * @author Mark Vollmary
  *
  */
 public class VPackJdk8Module implements VPackModule {

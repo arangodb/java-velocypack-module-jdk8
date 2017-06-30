@@ -34,7 +34,7 @@ import com.arangodb.velocypack.VPackSerializer;
 import com.arangodb.velocypack.internal.VPackSerializers;
 
 /**
- * @author Mark - mark at arangodb.com
+ * @author Mark Vollmary
  *
  */
 public class VPackJdk8Serializers {
