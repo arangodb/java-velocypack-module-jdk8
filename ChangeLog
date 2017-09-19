@@ -1,4 +1,4 @@
-v1.0.3 (2017-xx-xx)
+v1.0.3 (2017-09-19)
 ---------------------------
 * added support for de-/serializing ZonedDateTime (issue #2)
 * added support for de-/serializing OffsetDateTime (issue #2)

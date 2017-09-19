@@ -12,10 +12,13 @@ Added support for:
 * java.time.Instant
 * java.time.LocalDate
 * java.time.LocalDateTime
-* java.util.Optional;
-* java.util.OptionalDouble;
-* java.util.OptionalInt;
-* java.util.OptionalLong;
+* java.time.ZonedDateTime
+* java.time.OffsetDateTime
+* java.time.ZoneId
+* java.util.Optional
+* java.util.OptionalDouble
+* java.util.OptionalInt
+* java.util.OptionalLong
 
 
 ## Maven
@@ -27,7 +30,7 @@ To add the dependency to your project with maven, add the following code to your
   <dependency>
     <groupId>com.arangodb</groupId>
     <artifactId>velocypack-module-jdk8</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.3</version>
   </dependency>
 </dependencies>
 ```
