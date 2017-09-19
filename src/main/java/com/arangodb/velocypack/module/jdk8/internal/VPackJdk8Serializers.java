@@ -23,7 +23,9 @@ package com.arangodb.velocypack.module.jdk8.internal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -47,6 +49,15 @@ public class VPackJdk8Serializers {
 	};
 	public static final VPackSerializer<LocalDateTime> LOCAL_DATE_TIME = (builder, attribute, value, context) -> {
 		INSTANT.serialize(builder, attribute, value.atZone(ZoneId.systemDefault()).toInstant(), context);
+	};
+	public static final VPackSerializer<ZonedDateTime> ZONED_DATE_TIME = (builder, attribute, value, context) -> {
+		INSTANT.serialize(builder, attribute, value.toInstant(), context);
+	};
+	public static final VPackSerializer<OffsetDateTime> OFFSET_DATE_TIME = (builder, attribute, value, context) -> {
+		INSTANT.serialize(builder, attribute, value.toInstant(), context);
+	};
+	public static final VPackSerializer<ZoneId> ZONE_ID = (builder, attribute, value, context) -> {
+		builder.add(attribute, value.getId());
 	};
 	public static final VPackSerializer<Optional<?>> OPTIONAL = (builder, attribute, value, context) -> {
 		context.serialize(builder, attribute, value.orElse(null));

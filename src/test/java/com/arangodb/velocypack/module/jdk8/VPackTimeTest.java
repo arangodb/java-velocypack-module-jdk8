@@ -29,7 +29,10 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.junit.BeforeClass;
@@ -39,6 +42,7 @@ import com.arangodb.velocypack.VPack;
 import com.arangodb.velocypack.VPackBuilder;
 import com.arangodb.velocypack.VPackSlice;
 import com.arangodb.velocypack.ValueType;
+import com.arangodb.velocypack.module.jdk8.internal.VPackJdk8Deserializers;
 
 /**
  * @author Mark Vollmary
@@ -59,12 +63,18 @@ public class VPackTimeTest {
 		private Instant instant;
 		private LocalDate localDate;
 		private LocalDateTime localDateTime;
+		private ZonedDateTime zonedDateTime;
+		private OffsetDateTime offsetDateTime;
+		private ZoneId zoneId;
 
 		public TestEntityDate(final long millis) {
 			super();
 			instant = Instant.ofEpochMilli(millis);
 			localDate = instant.atZone(ZoneId.systemDefault()).toLocalDate();
 			localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+			zonedDateTime = instant.atZone(ZoneId.systemDefault());
+			offsetDateTime = instant.atOffset(ZoneId.systemDefault().getRules().getOffset(instant));
+			zoneId = ZoneId.systemDefault();
 		}
 
 		public TestEntityDate() {
@@ -95,6 +105,30 @@ public class VPackTimeTest {
 			this.localDateTime = localDateTime;
 		}
 
+		public ZonedDateTime getZonedDateTime() {
+			return zonedDateTime;
+		}
+
+		public void setZonedDateTime(final ZonedDateTime zonedDateTime) {
+			this.zonedDateTime = zonedDateTime;
+		}
+
+		public OffsetDateTime getOffsetDateTime() {
+			return offsetDateTime;
+		}
+
+		public void setOffsetDateTime(final OffsetDateTime offsetDateTime) {
+			this.offsetDateTime = offsetDateTime;
+		}
+
+		public ZoneId getZoneId() {
+			return zoneId;
+		}
+
+		public void setZoneId(final ZoneId zoneId) {
+			this.zoneId = zoneId;
+		}
+
 	}
 
 	@SuppressWarnings("deprecation")
@@ -109,6 +143,10 @@ public class VPackTimeTest {
 		assertThat(vpack.get("localDate").getAsString(), is(DATE_FORMAT.format(new Date(70, 0, 18))));
 		assertThat(vpack.get("localDateTime").isString(), is(true));
 		assertThat(vpack.get("localDateTime").getAsString(), is(DATE_FORMAT.format(new Date(1474988621))));
+		assertThat(vpack.get("zonedDateTime").isString(), is(true));
+		assertThat(vpack.get("zonedDateTime").getAsString(), is(DATE_FORMAT.format(new Date(1474988621))));
+		assertThat(vpack.get("offsetDateTime").isString(), is(true));
+		assertThat(vpack.get("offsetDateTime").getAsString(), is(DATE_FORMAT.format(new Date(1474988621))));
 	}
 
 	@SuppressWarnings("deprecation")
@@ -119,6 +157,8 @@ public class VPackTimeTest {
 		builder.add("instant", new Date(1475062216));
 		builder.add("localDate", new Date(70, 0, 18));
 		builder.add("localDateTime", new Date(1475062216));
+		builder.add("zonedDateTime", new Date(1475062216));
+		builder.add("offsetDateTime", new Date(1475062216));
 		builder.close();
 
 		final TestEntityDate entity = vp.deserialize(builder.slice(), TestEntityDate.class);
@@ -127,6 +167,8 @@ public class VPackTimeTest {
 		assertThat(entity.localDate, is(Instant.ofEpochMilli(1475062216).atZone(ZoneId.systemDefault()).toLocalDate()));
 		assertThat(entity.localDateTime,
 			is(LocalDateTime.ofInstant(Instant.ofEpochMilli(1475062216), ZoneId.systemDefault())));
+		assertThat(entity.zonedDateTime,
+			is(ZonedDateTime.ofInstant(Instant.ofEpochMilli(1475062216), ZoneId.systemDefault())));
 	}
 
 	@SuppressWarnings("deprecation")
@@ -137,6 +179,7 @@ public class VPackTimeTest {
 		builder.add("instant", DATE_FORMAT.format(new Date(1475062216)));
 		builder.add("localDate", DATE_FORMAT.format(new Date(70, 0, 18)));
 		builder.add("localDateTime", DATE_FORMAT.format(new Date(1475062216)));
+		builder.add("zonedDateTime", DATE_FORMAT.format(new Date(1475062216)));
 		builder.close();
 
 		final TestEntityDate entity = vp.deserialize(builder.slice(), TestEntityDate.class);
@@ -145,6 +188,8 @@ public class VPackTimeTest {
 		assertThat(entity.localDate, is(Instant.ofEpochMilli(1475062216).atZone(ZoneId.systemDefault()).toLocalDate()));
 		assertThat(entity.localDateTime,
 			is(LocalDateTime.ofInstant(Instant.ofEpochMilli(1475062216), ZoneId.systemDefault())));
+		assertThat(entity.zonedDateTime,
+			is(ZonedDateTime.ofInstant(Instant.ofEpochMilli(1475062216), ZoneId.systemDefault())));
 	}
 
 	@Test
@@ -157,6 +202,25 @@ public class VPackTimeTest {
 		assertThat(entity2.instant, is(entity.instant));
 		assertThat(entity2.localDate, is(entity.localDate));
 		assertThat(entity2.localDateTime, is(entity.localDateTime));
+		assertThat(entity2.zonedDateTime, is(entity.zonedDateTime));
+		assertThat(entity2.offsetDateTime, is(entity.offsetDateTime));
 	}
 
+	@Test
+	public void offsetDateTimeCompatibilityWithDateTimeFormatter() throws Exception {
+		final OffsetDateTime out = OffsetDateTime.now();
+		final String s = out.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		final OffsetDateTime in = VPackJdk8Deserializers.OFFSET_DATE_TIME.deserialize(null,
+			new VPackBuilder().add(s).slice(), null);
+		assertThat(in, is(out));
+	}
+
+	@Test
+	public void zonedDateTimeCompatibilityWithDateTimeFormatter() throws Exception {
+		final ZonedDateTime out = ZonedDateTime.now();
+		final String s = out.format(DateTimeFormatter.ISO_ZONED_DATE_TIME);
+		final ZonedDateTime in = VPackJdk8Deserializers.ZONED_DATE_TIME.deserialize(null,
+			new VPackBuilder().add(s).slice(), null);
+		assertThat(in, is(out));
+	}
 }
