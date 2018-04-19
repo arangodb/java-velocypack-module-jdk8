@@ -37,8 +37,7 @@ import com.arangodb.velocypack.VPackDeserializer;
 import com.arangodb.velocypack.VPackDeserializerParameterizedType;
 import com.arangodb.velocypack.VPackSlice;
 import com.arangodb.velocypack.exception.VPackException;
-import com.arangodb.velocypack.exception.VPackParserException;
-import com.arangodb.velocypack.internal.VPackDeserializers;
+import com.arangodb.velocypack.module.jdk8.internal.util.JavaTimeUtil;
 
 /**
  * @author Mark Vollmary
@@ -47,31 +46,24 @@ import com.arangodb.velocypack.internal.VPackDeserializers;
 public class VPackJdk8Deserializers {
 
 	public static final VPackDeserializer<Instant> INSTANT = (parent, vpack, context) -> {
-		return VPackDeserializers.DATE.deserialize(parent, vpack, context).toInstant();
+		return (vpack.isString()) ? JavaTimeUtil.parseInstant(vpack.getAsString()) : vpack.getAsDate().toInstant();
 	};
 	public static final VPackDeserializer<LocalDate> LOCAL_DATE = (parent, vpack, context) -> {
-		return VPackDeserializers.DATE.deserialize(parent, vpack, context).toInstant().atZone(ZoneId.systemDefault())
-				.toLocalDate();
+		return (vpack.isString()) ? JavaTimeUtil.parseLocalDate(vpack.getAsString())
+				: vpack.getAsDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	};
 	public static final VPackDeserializer<LocalDateTime> LOCAL_DATE_TIME = (parent, vpack, context) -> {
-		return VPackDeserializers.DATE.deserialize(parent, vpack, context).toInstant().atZone(ZoneId.systemDefault())
-				.toLocalDateTime();
+		return (vpack.isString()) ? JavaTimeUtil.parseLocalDateTime(vpack.getAsString())
+				: vpack.getAsDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 	};
 	public static final VPackDeserializer<ZonedDateTime> ZONED_DATE_TIME = (parent, vpack, context) -> {
-		try {
-			return VPackDeserializers.DATE.deserialize(parent, vpack, context).toInstant()
-					.atZone(ZoneId.systemDefault());
-		} catch (final VPackParserException e) {
-			return ZonedDateTime.parse(vpack.getAsString());
-		}
+		return (vpack.isString()) ? JavaTimeUtil.parseZonedDateTime(vpack.getAsString())
+				: vpack.getAsDate().toInstant().atZone(ZoneId.systemDefault());
 	};
 	public static final VPackDeserializer<OffsetDateTime> OFFSET_DATE_TIME = (parent, vpack, context) -> {
-		try {
-			final Instant instant = VPackDeserializers.DATE.deserialize(parent, vpack, context).toInstant();
-			return instant.atOffset(ZoneId.systemDefault().getRules().getOffset(instant));
-		} catch (final VPackParserException e) {
-			return OffsetDateTime.parse(vpack.getAsString());
-		}
+		return (vpack.isString()) ? JavaTimeUtil.parseOffsetDateTime(vpack.getAsString())
+				: vpack.getAsDate().toInstant()
+						.atOffset(ZoneId.systemDefault().getRules().getOffset(vpack.getAsDate().toInstant()));
 	};
 	public static final VPackDeserializer<ZoneId> ZONE_ID = (parent, vpack, context) -> {
 		return ZoneId.of(vpack.getAsString());

@@ -34,6 +34,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -50,7 +51,14 @@ import com.arangodb.velocypack.module.jdk8.internal.VPackJdk8Deserializers;
  */
 public class VPackTimeTest {
 
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");// ISO 8601
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+	private static final DateFormat DATE_FORMAT_LOCAL_DATE = new SimpleDateFormat("yyyy-MM-dd");
+	private static final DateFormat DATE_FORMAT_LOCAL_DATE_TIME = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+	private static final DateFormat DATE_FORMAT_OFFSET_DATE_TIME = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+	private static final DateFormat DATE_FORMAT_ZONED_DATE_TIME = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+	static {
+		DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+	}
 
 	private static VPack vp;
 
@@ -140,13 +148,16 @@ public class VPackTimeTest {
 		assertThat(vpack.get("instant").isString(), is(true));
 		assertThat(vpack.get("instant").getAsString(), is(DATE_FORMAT.format(new Date(1474988621))));
 		assertThat(vpack.get("localDate").isString(), is(true));
-		assertThat(vpack.get("localDate").getAsString(), is(DATE_FORMAT.format(new Date(70, 0, 18))));
+		assertThat(vpack.get("localDate").getAsString(), is(DATE_FORMAT_LOCAL_DATE.format(new Date(70, 0, 18))));
 		assertThat(vpack.get("localDateTime").isString(), is(true));
-		assertThat(vpack.get("localDateTime").getAsString(), is(DATE_FORMAT.format(new Date(1474988621))));
+		assertThat(vpack.get("localDateTime").getAsString(),
+			is(DATE_FORMAT_LOCAL_DATE_TIME.format(new Date(1474988621))));
 		assertThat(vpack.get("zonedDateTime").isString(), is(true));
-		assertThat(vpack.get("zonedDateTime").getAsString(), is(DATE_FORMAT.format(new Date(1474988621))));
+		assertThat(vpack.get("zonedDateTime").getAsString(), is(
+			DATE_FORMAT_ZONED_DATE_TIME.format(new Date(1474988621)) + "[" + ZoneId.systemDefault().toString() + "]"));
 		assertThat(vpack.get("offsetDateTime").isString(), is(true));
-		assertThat(vpack.get("offsetDateTime").getAsString(), is(DATE_FORMAT.format(new Date(1474988621))));
+		assertThat(vpack.get("offsetDateTime").getAsString(),
+			is(DATE_FORMAT_OFFSET_DATE_TIME.format(new Date(1474988621))));
 	}
 
 	@SuppressWarnings("deprecation")
@@ -177,9 +188,10 @@ public class VPackTimeTest {
 		final VPackBuilder builder = new VPackBuilder();
 		builder.add(ValueType.OBJECT);
 		builder.add("instant", DATE_FORMAT.format(new Date(1475062216)));
-		builder.add("localDate", DATE_FORMAT.format(new Date(70, 0, 18)));
-		builder.add("localDateTime", DATE_FORMAT.format(new Date(1475062216)));
-		builder.add("zonedDateTime", DATE_FORMAT.format(new Date(1475062216)));
+		builder.add("localDate", DATE_FORMAT_LOCAL_DATE.format(new Date(70, 0, 18)));
+		builder.add("localDateTime", DATE_FORMAT_LOCAL_DATE_TIME.format(new Date(1475062216)));
+		builder.add("zonedDateTime",
+			DATE_FORMAT_ZONED_DATE_TIME.format(new Date(1475062216)) + "[" + ZoneId.systemDefault().toString() + "]");
 		builder.close();
 
 		final TestEntityDate entity = vp.deserialize(builder.slice(), TestEntityDate.class);

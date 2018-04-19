@@ -26,14 +26,13 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 
 import com.arangodb.velocypack.VPackSerializer;
-import com.arangodb.velocypack.internal.VPackSerializers;
+import com.arangodb.velocypack.module.jdk8.internal.util.JavaTimeUtil;
 
 /**
  * @author Mark Vollmary
@@ -42,19 +41,19 @@ import com.arangodb.velocypack.internal.VPackSerializers;
 public class VPackJdk8Serializers {
 
 	public static final VPackSerializer<Instant> INSTANT = (builder, attribute, value, context) -> {
-		VPackSerializers.DATE.serialize(builder, attribute, Date.from(value), context);
+		builder.add(attribute, JavaTimeUtil.format(value));
 	};
 	public static final VPackSerializer<LocalDate> LOCAL_DATE = (builder, attribute, value, context) -> {
-		INSTANT.serialize(builder, attribute, value.atStartOfDay(ZoneId.systemDefault()).toInstant(), context);
+		builder.add(attribute, JavaTimeUtil.format(value));
 	};
 	public static final VPackSerializer<LocalDateTime> LOCAL_DATE_TIME = (builder, attribute, value, context) -> {
-		INSTANT.serialize(builder, attribute, value.atZone(ZoneId.systemDefault()).toInstant(), context);
+		builder.add(attribute, JavaTimeUtil.format(value));
 	};
 	public static final VPackSerializer<ZonedDateTime> ZONED_DATE_TIME = (builder, attribute, value, context) -> {
-		INSTANT.serialize(builder, attribute, value.toInstant(), context);
+		builder.add(attribute, JavaTimeUtil.format(value));
 	};
 	public static final VPackSerializer<OffsetDateTime> OFFSET_DATE_TIME = (builder, attribute, value, context) -> {
-		INSTANT.serialize(builder, attribute, value.toInstant(), context);
+		builder.add(attribute, JavaTimeUtil.format(value));
 	};
 	public static final VPackSerializer<ZoneId> ZONE_ID = (builder, attribute, value, context) -> {
 		builder.add(attribute, value.getId());
