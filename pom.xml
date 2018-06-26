@@ -32,7 +32,7 @@
 	<developers>
 		<developer>
 			<id>mpv1989</id>
-			<name>Mark</name>
+			<name>Mark Vollmary</name>
 			<url>https://github.com/mpv1989</url>
 		</developer>
 	</developers>
@@ -222,7 +222,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -263,5 +263,5 @@
 		<name>ArangoDB GmbH</name>
 		<url>https://www.arangodb.com</url>
 	</organization>
-	
+
 </project>
