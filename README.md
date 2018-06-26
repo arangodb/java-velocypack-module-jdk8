@@ -1,25 +1,23 @@
-
 ![ArangoDB-Logo](https://docs.arangodb.com/assets/arangodb_logo_2016_inverted.png)
 
 # ArangoDB VelocyPack Java Module jdk8
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.arangodb/velocypack-module-jdk8/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.arangodb/velocypack-module-jdk8)
 
-
 Java 8 module for [Java VelocyPack](https://github.com/arangodb/java-velocypack).
 
 Added support for:
-* java.time.Instant
-* java.time.LocalDate
-* java.time.LocalDateTime
-* java.time.ZonedDateTime
-* java.time.OffsetDateTime
-* java.time.ZoneId
-* java.util.Optional
-* java.util.OptionalDouble
-* java.util.OptionalInt
-* java.util.OptionalLong
 
+- `java.time.Instant`
+- `java.time.LocalDate`
+- `java.time.LocalDateTime`
+- `java.time.ZonedDateTime`
+- `java.time.OffsetDateTime`
+- `java.time.ZoneId`
+- `java.util.Optional`
+- `java.util.OptionalDouble`
+- `java.util.OptionalInt`
+- `java.util.OptionalLong`
 
 ## Maven
 
@@ -54,6 +52,11 @@ mvn clean install -DskipTests=true -Dgpg.skip=true -Dmaven.javadoc.skip=true -B
 
 ## Usage / registering module
 
-``` Java
+```Java
 VPack vpack = new VPack.Builder().registerModule(new VPackJdk8Module()).build();
-``` 
+```
+
+## Learn more
+
+- [ArangoDB](https://www.arangodb.com/)
+- [Changelog](ChangeLog.md)
