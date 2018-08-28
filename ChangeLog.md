@@ -37,3 +37,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - added support for de-/serializing OptionalDouble
 - added support for de-/serializing OptionalInt
 - added support for de-/serializing OptionalLong
+
+[unreleased]: https://github.com/arangodb/java-velocypack-module-jdk8/compare/1.1.0...HEAD
+[1.1.0]: https://github.com/arangodb/java-velocypack-module-jdk8/compare/1.0.3...1.1.0
+[1.0.3]: https://github.com/arangodb/java-velocypack-module-jdk8/compare/1.0.2...1.0.3
+[1.0.2]: https://github.com/arangodb/java-velocypack-module-jdk8/compare/1.0.1...1.0.2
