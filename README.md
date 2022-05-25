@@ -7,6 +7,8 @@ in combination with [jackson-modules-java8](https://github.com/FasterXML/jackson
 the ArangoDB Java driver, refer to the
 official [serialization documentation](https://www.arangodb.com/docs/stable/drivers/java-reference-serialization.html).
 
+---
+
 # ArangoDB VelocyPack Java Module jdk8
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.arangodb/velocypack-module-jdk8/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.arangodb/velocypack-module-jdk8)
